@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎬 Watchlist — Movies & TV Shows Tracker
 
-## Getting Started
+A modern, cinematic, independent full-stack web application to track movies and TV series, log episode progress with 1 click, maintain ratings and personal reviews, and import backlogs via TMDB (The Movie Database).
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## ✨ Features
+
+- **Instant TMDB Search (`Ctrl+K`):** Type any title to fetch official posters, release years, synopsis, genres, and TMDB scores in real-time.
+- **1-Click Episode Tracker:** Single-click `+1 Next Ep` button on cards for running TV shows. Automatically updates current episode and progress bar without page reloads.
+- **Batch Backlog Import:** Paste up to 50 titles (e.g. from notes or Instagram saves) at once; the system matches them against TMDB and imports them into your *Plan to Watch* list with 1 click.
+- **Cinematic Dark Theme:** Sleek deep-dark palette (`#090a0f`), backdrop blur, responsive card grids, and status badges (*Watching, Plan to Watch, Completed, Dropped*).
+- **Personal Ratings & Notes:** Score from 1 to 10 stars and jot down personal reviews or reasons why you saved each item.
+- **Future-Proof Multi-User Architecture:** Built with Prisma ORM and SQLite (local dev), pre-seeded with single-user focus, but fully relational with `userId` ready for multi-tenant deployment to PostgreSQL or Oracle Cloud VPS.
+
+---
+
+## 🚀 Quick Start
+
+### 1. Environment Variables
+Copy `.env.example` to `.env`:
+```env
+DATABASE_URL="file:./dev.db"
+# Get your free TMDB API Read Access Token or API Key from: https://www.themoviedb.org/settings/api
+TMDB_API_KEY=""
+DEFAULT_USER_EMAIL="furkan@watchlist.local"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install & Sync Database
+```bash
+npm install
+npx prisma db push
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Run Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 4. Build for Production
+```bash
+npm run build
+npm run start
+```

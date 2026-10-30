@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String      @id @default(uuid())
+  email        String      @unique
+  name         String
+  passwordHash String?
+  role         String      @default("USER")
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  items        MediaItem[]
+}
+
+model MediaItem {
+  id              String            @id @default(uuid())
+  userId          String
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tmdbId          Int?
+  imdbId          String?
+  mediaType       String            // "MOVIE" or "TV"
+  title           String
+  originalTitle   String?
+  posterPath      String?
+  backdropPath    String?
+  overview        String?
+  releaseYear     Int?
+  genres          String?           // Comma-separated or JSON
+  status          String            @default("PLAN_TO_WATCH") // "PLAN_TO_WATCH", "WATCHING", "COMPLETED", "DROPPED"
+  rating          Float?            // User personal rating (1 to 10)
+  tmdbRating      Float?            // TMDB community score (e.g. 8.4)
+  imdbRating      Float?            // IMDb score (e.g. 8.8)
+  rottenTomatoes  String?           // Rotten Tomatoes (e.g. "87%")
+  voteCount       Int?
+  runtime         Int?              // in minutes
+  tagline         String?
+  network         String?           // e.g. "HBO", "Apple TV+", "Netflix"
+  country         String?           // e.g. "US", "KR"
+  director        String?
+  cast            String?           // Top cast members
+  trailerKey      String?           // YouTube video ID
+  watchProviders  String?           // Where to watch in Turkey (flatrate)
+  nextEpisodeDate String?           // Next episode air date
+  showStatus      String?           // "Ended", "Returning Series", etc.
+  notes           String?
+  seasonsData     String?           // JSON array: [{ seasonNumber, name, episodeCount }]
+  totalSeasons    Int               @default(1)
+  totalEpisodes   Int               @default(1)
+  currentSeason   Int               @default(1)
+  currentEpisode  Int               @default(0)
+  lastWatchedAt   DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  episodes        EpisodeProgress[]
+
+  @@index([userId, status])
+  @@index([userId, mediaType])
+}
+
+model EpisodeProgress {
+  id            String    @id @default(uuid())
+  mediaItemId   String
+  mediaItem     MediaItem @relation(fields: [mediaItemId], references: [id], onDelete: Cascade)
+  seasonNumber  Int
+  episodeNumber Int
+  episodeName   String?
+  isWatched     Boolean   @default(false)
+  watchedAt     DateTime?
+
+  @@unique([mediaItemId, seasonNumber, episodeNumber])
+}

@@ -193,9 +193,9 @@ export default function HomePage() {
       />
 
       {/* Main Container */}
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-3.5 py-4 sm:px-6 sm:py-6 safe-bottom">
         {/* Filter & Search Bar */}
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <FilterBar
             status={statusFilter}
             onStatusChange={setStatusFilter}
@@ -218,7 +218,7 @@ export default function HomePage() {
             <p className="mt-3 text-xs">Loading collection...</p>
           </div>
         ) : items.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5 sm:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
             {items.map((item) => (
               <MediaCard
                 key={item.id}

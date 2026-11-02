@@ -180,15 +180,18 @@ export function MediaDetailModal({
     <div
       onMouseDown={handleBackdropMouseDown}
       onMouseUp={handleBackdropMouseUp}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/85 backdrop-blur-md p-3 sm:p-6 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-zinc-950/85 backdrop-blur-md p-0 sm:p-6 overflow-y-auto"
     >
       <div
-        className="relative w-full max-w-2xl rounded-2xl bg-zinc-900 border border-zinc-800 shadow-2xl overflow-hidden my-6 animate-in fade-in zoom-in-95 duration-200"
+        className="relative w-full max-w-2xl rounded-t-3xl sm:rounded-2xl bg-zinc-900 border-t sm:border border-zinc-800 shadow-2xl overflow-hidden max-h-[92vh] sm:max-h-[90vh] flex flex-col my-0 sm:my-6 animate-in slide-in-from-bottom-5 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
       >
+        {/* Mobile Pull Handle Pill */}
+        <div className="mx-auto mt-2.5 mb-1 h-1.5 w-12 rounded-full bg-zinc-700/80 sm:hidden shrink-0" />
+
         {/* Backdrop Header */}
-        <div className="relative h-48 sm:h-60 w-full overflow-hidden bg-zinc-950">
+        <div className="relative h-44 sm:h-60 w-full overflow-hidden bg-zinc-950 shrink-0">
           {item.backdropPath ? (
             <Image
               src={item.backdropPath}
@@ -423,13 +426,13 @@ export function MediaDetailModal({
                   </button>
                 )}
               </div>
-              <div className="flex items-center gap-1">
+              <div className="grid grid-cols-5 sm:flex sm:items-center gap-1">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                   <button
                     key={num}
                     type="button"
                     onClick={() => setRating(num)}
-                    className={`flex-1 rounded-md py-1.5 text-xs font-semibold transition ${
+                    className={`flex-1 rounded-md py-2 sm:py-1.5 text-xs font-semibold transition active:scale-95 ${
                       rating !== null && rating >= num
                         ? "bg-amber-500 text-zinc-950 shadow-sm"
                         : "bg-zinc-900 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 border border-zinc-800"
@@ -608,13 +611,13 @@ export function MediaDetailModal({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Why did you save this? Favorite episode, quotes, or personal review..."
-              className="w-full rounded-xl bg-zinc-950 border border-zinc-800 p-3 text-xs text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 transition resize-none leading-relaxed"
+              className="w-full rounded-xl bg-zinc-950 border border-zinc-800 p-3 text-sm sm:text-xs text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 transition resize-none leading-relaxed"
             />
           </div>
         </div>
 
         {/* Modal Footer */}
-        <div className="flex items-center justify-between border-t border-zinc-800 bg-zinc-900/90 px-5 py-3.5">
+        <div className="flex items-center justify-between border-t border-zinc-800 bg-zinc-900/95 px-4 py-3 sm:px-5 sm:py-3.5 safe-bottom shrink-0">
           {/* Delete Action */}
           <div>
             {showDeleteConfirm ? (

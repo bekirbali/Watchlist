@@ -67,9 +67,9 @@ export function FilterBar({
   };
 
   return (
-    <div className="space-y-4">
-      {/* Status Navigation Tabs */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+    <div className="space-y-3 sm:space-y-4">
+      {/* Status Navigation Tabs with Edge-to-Edge Touch Scroll */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 touch-scroll no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = status === tab.id;
@@ -77,7 +77,7 @@ export function FilterBar({
             <button
               key={tab.id}
               onClick={() => onStatusChange(tab.id)}
-              className={`flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-medium transition whitespace-nowrap ${
+              className={`flex items-center gap-2 rounded-xl px-3 sm:px-3.5 py-2 text-xs sm:text-sm font-medium transition whitespace-nowrap active:scale-95 shrink-0 ${
                 isActive
                   ? "bg-zinc-100 text-zinc-950 font-semibold shadow-sm"
                   : "bg-zinc-900/60 text-zinc-400 hover:bg-zinc-850 hover:text-zinc-200 border border-zinc-800/60"
@@ -97,22 +97,22 @@ export function FilterBar({
         })}
       </div>
 
-      {/* Secondary Controls Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-        {/* Type Toggle */}
-        <div className="flex items-center rounded-xl bg-zinc-900 p-1 border border-zinc-800">
+      {/* Secondary Controls Bar: Type Segmented Control + Search & Sort */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 pt-0.5">
+        {/* Type Toggle (Full-width 3-segment on mobile, compact inline on desktop) */}
+        <div className="grid grid-cols-3 sm:flex items-center rounded-xl bg-zinc-900 p-1 border border-zinc-800 w-full sm:w-auto">
           <button
             onClick={() => onMediaTypeChange("ALL")}
-            className={`rounded-lg px-2.5 py-1 text-xs font-medium transition ${
-              mediaType === "ALL" ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-zinc-200"
+            className={`flex items-center justify-center rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${
+              mediaType === "ALL" ? "bg-zinc-800 text-white shadow-xs" : "text-zinc-400 hover:text-zinc-200"
             }`}
           >
             All Types
           </button>
           <button
             onClick={() => onMediaTypeChange("TV")}
-            className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition ${
-              mediaType === "TV" ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-zinc-200"
+            className={`flex items-center justify-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${
+              mediaType === "TV" ? "bg-zinc-800 text-white shadow-xs" : "text-zinc-400 hover:text-zinc-200"
             }`}
           >
             <Tv className="h-3.5 w-3.5" />
@@ -120,8 +120,8 @@ export function FilterBar({
           </button>
           <button
             onClick={() => onMediaTypeChange("MOVIE")}
-            className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition ${
-              mediaType === "MOVIE" ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-zinc-200"
+            className={`flex items-center justify-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${
+              mediaType === "MOVIE" ? "bg-zinc-800 text-white shadow-xs" : "text-zinc-400 hover:text-zinc-200"
             }`}
           >
             <Film className="h-3.5 w-3.5" />
@@ -129,19 +129,19 @@ export function FilterBar({
           </button>
         </div>
 
-        {/* Search & Sort */}
-        <div className="flex items-center gap-2">
+        {/* Search & Sort Controls */}
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           {/* Quick Filter Input */}
           <input
             type="text"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Filter list..."
-            className="w-36 sm:w-48 rounded-xl bg-zinc-900 border border-zinc-800 px-3 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition"
+            className="flex-1 sm:w-48 rounded-xl bg-zinc-900 border border-zinc-800 px-3 py-1.5 text-sm sm:text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition"
           />
 
           {/* Sort Selector & Direction Toggle */}
-          <div className="flex items-center gap-1 rounded-xl bg-zinc-900 border border-zinc-800 p-0.5">
+          <div className="flex items-center gap-1 rounded-xl bg-zinc-900 border border-zinc-800 p-0.5 shrink-0">
             <div className="flex items-center gap-1.5 px-2 py-1 text-xs text-zinc-300">
               <ArrowUpDown className="h-3.5 w-3.5 text-zinc-400 shrink-0" />
               <select
@@ -163,7 +163,7 @@ export function FilterBar({
               type="button"
               onClick={onToggleSortOrder}
               title={`Switch order (current: ${sortOrder === "asc" ? "Ascending" : "Descending"})`}
-              className="flex items-center gap-1 rounded-lg bg-zinc-800 hover:bg-zinc-750 px-2 py-1 text-[11px] font-semibold text-zinc-200 hover:text-white transition border border-zinc-700/60 shadow-xs"
+              className="flex items-center gap-1 rounded-lg bg-zinc-800 hover:bg-zinc-750 px-2 py-1 text-[11px] font-semibold text-zinc-200 hover:text-white active:scale-95 transition border border-zinc-700/60 shadow-xs"
             >
               {sortOrder === "asc" ? (
                 <ArrowUp className="h-3.5 w-3.5 text-indigo-400 shrink-0" />

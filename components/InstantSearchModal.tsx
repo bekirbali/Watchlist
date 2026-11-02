@@ -139,29 +139,29 @@ export function InstantSearchModal({
     <div
       onMouseDown={handleBackdropMouseDown}
       onMouseUp={handleBackdropMouseUp}
-      className="fixed inset-0 z-50 flex items-start justify-center bg-zinc-950/80 backdrop-blur-md p-4 sm:p-6 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center bg-zinc-950/80 backdrop-blur-md p-2 sm:p-6 overflow-y-auto safe-top"
     >
       <div
-        className="relative w-full max-w-2xl rounded-2xl bg-zinc-900 border border-zinc-800 shadow-2xl overflow-hidden mt-6 sm:mt-12 animate-in fade-in zoom-in-95 duration-200"
+        className="relative w-full max-w-2xl rounded-2xl bg-zinc-900 border border-zinc-800 shadow-2xl overflow-hidden mt-2 sm:mt-0 animate-in fade-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
       >
         {/* Header Search Input */}
-        <div className="flex items-center gap-3 border-b border-zinc-800 px-4 py-3.5 bg-zinc-900/90">
-          <Search className="h-5 w-5 text-indigo-400" />
+        <div className="flex items-center gap-2.5 sm:gap-3 border-b border-zinc-800 px-3.5 py-3 sm:px-4 sm:py-3.5 bg-zinc-900/90">
+          <Search className="h-5 w-5 text-indigo-400 shrink-0" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search movie or TV series title..."
-            className="flex-1 bg-transparent text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none"
+            className="flex-1 bg-transparent text-base sm:text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none"
           />
           {isLoading && <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />}
           {query && !isLoading && (
             <button
               onClick={() => setQuery("")}
-              className="text-zinc-500 hover:text-zinc-300 transition"
+              className="text-zinc-500 hover:text-zinc-300 p-1 transition"
             >
               <X className="h-4 w-4" />
             </button>
@@ -175,7 +175,7 @@ export function InstantSearchModal({
         </div>
 
         {/* Filter Badges & Helper */}
-        <div className="flex items-center justify-between border-b border-zinc-800/60 bg-zinc-950/40 px-4 py-2 text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800/60 bg-zinc-950/40 px-3.5 sm:px-4 py-2 text-xs">
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => setTypeFilter("all")}
@@ -208,7 +208,7 @@ export function InstantSearchModal({
               onClose();
               onOpenCustomAdd();
             }}
-            className="text-xs text-indigo-400 hover:text-indigo-300 font-medium transition"
+            className="text-xs text-indigo-400 hover:text-indigo-300 font-medium transition py-0.5"
           >
             Can't find it? Add manually →
           </button>

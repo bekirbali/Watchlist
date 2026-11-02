@@ -148,15 +148,18 @@ export function BatchImportModal({
     <div
       onMouseDown={handleBackdropMouseDown}
       onMouseUp={handleBackdropMouseUp}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/80 backdrop-blur-md p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-zinc-950/80 backdrop-blur-md p-0 sm:p-4 overflow-y-auto safe-top"
     >
       <div
-        className="relative w-full max-w-2xl rounded-2xl bg-zinc-900 border border-zinc-800 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+        className="relative w-full max-w-2xl rounded-t-3xl sm:rounded-2xl bg-zinc-900 border-t sm:border border-zinc-800 shadow-2xl overflow-hidden max-h-[92vh] sm:max-h-[90vh] flex flex-col animate-in slide-in-from-bottom-5 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
       >
+        {/* Mobile Pull Handle Pill */}
+        <div className="mx-auto mt-2.5 mb-1 h-1.5 w-12 rounded-full bg-zinc-700/80 sm:hidden shrink-0" />
+
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-zinc-800 px-5 py-4 bg-zinc-900/90">
+        <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-3.5 sm:px-5 sm:py-4 bg-zinc-900/90 shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-400">
               <UploadCloud className="h-4 w-4" />
@@ -197,11 +200,11 @@ export function BatchImportModal({
               </div>
 
               <textarea
-                rows={9}
+                rows={8}
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder={`Severance\nBreaking Bad\nInception\nInterstellar\nThe Bear\nSuccession\n...`}
-                className="w-full rounded-xl bg-zinc-950 border border-zinc-800 p-3.5 text-xs text-zinc-200 font-mono placeholder-zinc-600 focus:outline-none focus:border-indigo-500/60 transition resize-none leading-relaxed"
+                className="w-full rounded-xl bg-zinc-950 border border-zinc-800 p-3.5 text-sm sm:text-xs text-zinc-200 font-mono placeholder-zinc-600 focus:outline-none focus:border-indigo-500/60 transition resize-none leading-relaxed"
               />
 
               <div className="flex items-center justify-between pt-2">

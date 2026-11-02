@@ -142,7 +142,7 @@ export function MediaCard({
           e.stopPropagation();
           setIsStatusMenuOpen((prev) => !prev);
         }}
-        className={`group/status flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-medium border transition cursor-pointer ${getStatusColor(
+        className={`group/status flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-medium border transition cursor-pointer ${getStatusColor(
           item.status
         )} hover:brightness-110 active:scale-95`}
         title="Click to change watch status"
@@ -264,7 +264,7 @@ export function MediaCard({
       </div>
 
       {/* Card Info Content */}
-      <div className="flex flex-1 flex-col justify-between p-3.5">
+      <div className="flex flex-1 flex-col justify-between p-3 sm:p-3.5">
         <div>
           <h3 className="font-semibold text-sm text-zinc-100 line-clamp-1 group-hover:text-indigo-400 transition">
             {item.title}
@@ -314,14 +314,33 @@ export function MediaCard({
               />
             </div>
 
-            {/* TV Series Quick Status Control */}
+            {/* TV Series Quick Status Control & Fast +1 Ep Button */}
             <div className="flex items-center justify-between pt-1 border-t border-zinc-800/60">
               {renderStatusDropdown()}
-              {item.totalSeasons > 1 && (
-                <span className="text-[10px] text-zinc-500 font-medium">
-                  {item.totalSeasons} Seasons
-                </span>
-              )}
+              <div className="flex items-center">
+                {item.status !== "COMPLETED" && item.currentEpisode < item.totalEpisodes && (
+                  <button
+                    type="button"
+                    onClick={handleQuickNextEp}
+                    disabled={isIncrementing}
+                    className="flex sm:hidden items-center rounded-md bg-indigo-600/90 hover:bg-indigo-500 active:scale-95 text-white px-2 py-0.5 text-[10px] font-bold shadow-xs transition disabled:opacity-50"
+                    title="Mark next episode watched (+1)"
+                  >
+                    +1 Ep
+                  </button>
+                )}
+                {item.totalSeasons > 1 && (
+                  <span
+                    className={`text-[10px] text-zinc-500 font-medium ${
+                      item.status !== "COMPLETED" && item.currentEpisode < item.totalEpisodes
+                        ? "hidden sm:inline"
+                        : ""
+                    }`}
+                  >
+                    {item.totalSeasons} Seasons
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         )}

@@ -11,7 +11,7 @@ fi
 
 # Ensure schema is up to date
 echo "[Watchlist] Syncing database schema with Prisma..."
-npx prisma db push --skip-generate || true
+node ./node_modules/prisma/build/index.js db push --accept-data-loss --skip-generate || npx prisma db push --accept-data-loss --skip-generate || true
 
 echo "[Watchlist] Starting server on port ${PORT:-3000}..."
 exec node server.js

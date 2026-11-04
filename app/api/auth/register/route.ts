@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma, ensureDatabaseSchema } from "@/lib/prisma";
 import { hashPassword, signSessionToken, setAuthCookie } from "@/lib/auth";
 
 const USERNAME_REGEX = /^[a-z0-9_]{3,20}$/;
 
 export async function POST(request: NextRequest) {
   try {
+    await ensureDatabaseSchema();
     const body = await request.json();
     const { username, email, name, password, confirmPassword } = body;
 

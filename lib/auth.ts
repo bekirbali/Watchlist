@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
-import { prisma } from "./prisma";
+import { prisma, ensureDatabaseSchema } from "./prisma";
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || "watchlist-jwt-production-secret-token-key-2026-secure"
@@ -73,6 +73,7 @@ export async function removeAuthCookie() {
 
 export async function getCurrentUser(): Promise<AuthUser | null> {
   try {
+    await ensureDatabaseSchema();
     const cookieStore = await cookies();
     const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
     if (!token) return null;

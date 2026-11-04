@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma, getOrCreateDefaultUser } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/auth";
 import { getTMDBDetails } from "@/lib/tmdb";
 import { getOMDbRatings } from "@/lib/omdb";
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await getOrCreateDefaultUser();
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     const searchParams = request.nextUrl.searchParams;
     const status = searchParams.get("status");
     const mediaType = searchParams.get("mediaType");
@@ -103,7 +107,10 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await getOrCreateDefaultUser();
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     const body = await request.json();
     const {
       tmdbId,
@@ -252,7 +259,10 @@ export async function POST(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
-    const user = await getOrCreateDefaultUser();
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     const body = await request.json();
     const { id, status, rating, notes, currentSeason, currentEpisode } = body;
 
@@ -306,7 +316,10 @@ export async function PATCH(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const user = await getOrCreateDefaultUser();
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     const searchParams = request.nextUrl.searchParams;
     const id = searchParams.get("id");
 

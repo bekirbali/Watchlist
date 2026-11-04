@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma, getOrCreateDefaultUser } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/auth";
 import { searchTMDB, getTMDBDetails } from "@/lib/tmdb";
 import { getOMDbRatings } from "@/lib/omdb";
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await getOrCreateDefaultUser();
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     const body = await request.json();
     const { titles, items, previewOnly = false } = body;
 

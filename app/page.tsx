@@ -44,6 +44,10 @@ export default function HomePage() {
       if (searchText.trim()) params.set("search", searchText.trim());
 
       const res = await fetch(`/api/media?${params.toString()}`);
+      if (res.status === 401) {
+        window.location.href = "/login";
+        return;
+      }
       if (res.ok) {
         const data = await res.json();
         setItems(data.items || []);

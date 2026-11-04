@@ -15,6 +15,7 @@ services:
       - TMDB_API_KEY=${TMDB_API_KEY:-d10831a998076df0b4a1cde3556500dc}
       - OMDB_API_KEY=${OMDB_API_KEY:-25e20d42}
       - DEFAULT_USER_EMAIL=${DEFAULT_USER_EMAIL:-furkan@watchlist.local}
+      - JWT_SECRET=${JWT_SECRET:-943b564e17d51ee70df517fe00b619bd1702e2f41940482d59f54a860b6f0e65}
     volumes:
       - watchlist_data:/app/prisma
 

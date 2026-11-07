@@ -187,7 +187,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans selection:bg-indigo-500/30">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans selection:bg-indigo-500/30 w-full max-w-full overflow-x-hidden">
       {/* Top Navigation */}
       <Navbar
         counts={counts}
@@ -197,7 +197,7 @@ export default function HomePage() {
       />
 
       {/* Main Container */}
-      <main className="mx-auto w-full max-w-7xl flex-1 px-3.5 py-4 sm:px-6 sm:py-6 safe-bottom">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-3.5 py-4 sm:px-6 sm:py-6 safe-bottom min-w-0">
         {/* Filter & Search Bar */}
         <div className="mb-4 sm:mb-6">
           <FilterBar

@@ -72,12 +72,14 @@ export function Navbar({ counts, onOpenSearch, onOpenBatchImport, onOpenAddCusto
 
   return (
     <header className="sticky top-0 z-30 w-full border-b border-zinc-800/80 bg-zinc-950/85 backdrop-blur-md safe-top">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-3.5 py-2.5 sm:px-6 sm:py-3">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-3.5 py-2.5 sm:px-6 sm:py-3 gap-2 min-w-0">
         {/* Brand */}
-        <Logo size={38} showText={true} />
+        <div className="shrink-0 min-w-0">
+          <Logo size={38} showText={true} />
+        </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-1.5 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           {/* Quick Search Button */}
           <button
             onClick={onOpenSearch}

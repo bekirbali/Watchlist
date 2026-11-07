@@ -124,7 +124,7 @@ export function MediaCard({
       case "WATCHING":
         return "Watching";
       case "PLAN_TO_WATCH":
-        return "Plan to Watch";
+        return "Plan";
       case "COMPLETED":
         return "Completed";
       case "DROPPED":
@@ -142,7 +142,7 @@ export function MediaCard({
           e.stopPropagation();
           setIsStatusMenuOpen((prev) => !prev);
         }}
-        className={`group/status flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-medium border transition cursor-pointer ${getStatusColor(
+        className={`group/status flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-medium border transition cursor-pointer whitespace-nowrap ${getStatusColor(
           item.status
         )} hover:brightness-110 active:scale-95`}
         title="Click to change watch status"
@@ -323,7 +323,7 @@ export function MediaCard({
                     type="button"
                     onClick={handleQuickNextEp}
                     disabled={isIncrementing}
-                    className="flex sm:hidden items-center rounded-md bg-indigo-600/90 hover:bg-indigo-500 active:scale-95 text-white px-2 py-0.5 text-[10px] font-bold shadow-xs transition disabled:opacity-50"
+                    className="flex sm:hidden items-center rounded-md bg-indigo-600/90 hover:bg-indigo-500 active:scale-95 text-white px-2 py-0.5 text-[10px] font-bold shadow-xs transition disabled:opacity-50 whitespace-nowrap shrink-0 cursor-pointer"
                     title="Mark next episode watched (+1)"
                   >
                     +1 Ep

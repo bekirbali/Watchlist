@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Image from "next/image";
 import {
   X,
@@ -21,6 +21,8 @@ import {
   Clapperboard,
   Video,
   Check,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { MediaItemType } from "./MediaCard";
 
@@ -65,6 +67,16 @@ export function MediaDetailModal({
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const isBackdropClick = useRef(false);
+  const seasonTabsRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkSeasonScroll = useCallback(() => {
+    const el = seasonTabsRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  }, []);
 
   const parsedSeasons = useMemo(() => {
     if (!item || item.mediaType !== "TV") return [];
@@ -121,6 +133,61 @@ export function MediaDetailModal({
       setShowDeleteConfirm(false);
     }
   }, [item]);
+
+  // Lock body scroll when modal is open to prevent background viewport shifts on mobile
+  useEffect(() => {
+    if (!isOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isOpen]);
+
+  // Check season tabs scrollability on mount/update
+  useEffect(() => {
+    if (!isOpen) return;
+    const timer = setTimeout(() => {
+      checkSeasonScroll();
+    }, 100);
+    const el = seasonTabsRef.current;
+    if (!el) return () => clearTimeout(timer);
+    el.addEventListener("scroll", checkSeasonScroll, { passive: true });
+    window.addEventListener("resize", checkSeasonScroll);
+    return () => {
+      clearTimeout(timer);
+      el.removeEventListener("scroll", checkSeasonScroll);
+      window.removeEventListener("resize", checkSeasonScroll);
+    };
+  }, [isOpen, checkSeasonScroll, parsedSeasons]);
+
+  // Scroll active season tab into view smoothly
+  useEffect(() => {
+    if (!isOpen) return;
+    const el = seasonTabsRef.current;
+    if (!el) return;
+    const activeBtn = el.querySelector<HTMLButtonElement>(`[data-season="${activeSeasonTab}"]`);
+    if (activeBtn) {
+      activeBtn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+    }
+  }, [isOpen, activeSeasonTab]);
+
+  const handleSeasonWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    const el = seasonTabsRef.current;
+    if (!el) return;
+    if (el.scrollWidth > el.clientWidth) {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && e.deltaY !== 0) {
+        el.scrollLeft += e.deltaY;
+      }
+    }
+  };
+
+  const handleScrollSeasons = (direction: "left" | "right") => {
+    const el = seasonTabsRef.current;
+    if (!el) return;
+    const scrollAmount = direction === "left" ? -180 : 180;
+    el.scrollBy({ left: scrollAmount, behavior: "smooth" });
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -180,10 +247,10 @@ export function MediaDetailModal({
     <div
       onMouseDown={handleBackdropMouseDown}
       onMouseUp={handleBackdropMouseUp}
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-zinc-950/85 backdrop-blur-md p-0 sm:p-6 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-zinc-950/85 backdrop-blur-md p-0 sm:p-6 overflow-y-auto overflow-x-hidden"
     >
       <div
-        className="relative w-full max-w-2xl rounded-t-3xl sm:rounded-2xl bg-zinc-900 border-t sm:border border-zinc-800 shadow-2xl overflow-hidden max-h-[92vh] sm:max-h-[90vh] flex flex-col my-0 sm:my-6 animate-in slide-in-from-bottom-5 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200"
+        className="relative w-full max-w-2xl rounded-t-3xl sm:rounded-2xl bg-zinc-900 border-t sm:border border-zinc-800 shadow-2xl overflow-hidden max-h-[92vh] sm:max-h-[90vh] flex flex-col my-0 sm:my-6 animate-in slide-in-from-bottom-5 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200 min-w-0"
         onClick={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
       >
@@ -275,7 +342,7 @@ export function MediaDetailModal({
         </div>
 
         {/* Modal Body */}
-        <div className="p-4 sm:p-5 space-y-4 max-h-[60vh] overflow-y-auto">
+        <div className="p-4 sm:p-5 space-y-4 max-h-[60vh] overflow-y-auto overflow-x-hidden min-w-0">
           {/* Embedded YouTube Trailer Player */}
           {showTrailer && item.trailerKey && (
             <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-black border border-zinc-800 shadow-2xl animate-in fade-in duration-200">
@@ -447,7 +514,7 @@ export function MediaDetailModal({
 
           {/* TV Shows: Interactive Season & Episode Progress Manager */}
           {isTv && (
-            <div className="rounded-xl bg-zinc-950/70 border border-zinc-800 p-4 space-y-3.5">
+            <div className="rounded-xl bg-zinc-950/70 border border-zinc-800 p-4 space-y-3.5 min-w-0 overflow-hidden">
               {/* Header: Title & Current Watching Badge */}
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
@@ -466,34 +533,66 @@ export function MediaDetailModal({
                 </div>
               </div>
 
-              {/* Season Selection Tabs */}
+              {/* Season Selection Tabs with Smooth Horizontal Scroll & Wheel Support */}
               {parsedSeasons.length > 1 && (
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-                  {parsedSeasons.map((s) => {
-                    const isTabActive = activeSeasonTab === s.seasonNumber;
-                    const isSeasonCompleted =
-                      currentSeason > s.seasonNumber ||
-                      (currentSeason === s.seasonNumber && currentEpisode >= s.episodeCount);
+                <div className="relative flex items-center min-w-0 w-full group/seasons">
+                  {/* Left Scroll Navigation Pill */}
+                  {canScrollLeft && (
+                    <button
+                      type="button"
+                      onClick={() => handleScrollSeasons("left")}
+                      aria-label="Scroll seasons left"
+                      className="absolute left-0 z-10 flex h-7 w-7 items-center justify-center rounded-lg bg-zinc-900/90 text-zinc-300 hover:text-white hover:bg-zinc-800 border border-zinc-700/70 shadow-md backdrop-blur-xs transition shrink-0 cursor-pointer"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                  )}
 
-                    return (
-                      <button
-                        key={s.seasonNumber}
-                        type="button"
-                        onClick={() => setActiveSeasonTab(s.seasonNumber)}
-                        className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition border ${
-                          isTabActive
-                            ? "bg-indigo-600 text-white border-indigo-500 shadow-sm"
-                            : "bg-zinc-900 text-zinc-400 hover:text-zinc-200 border-zinc-800 hover:bg-zinc-850"
-                        }`}
-                      >
-                        {isSeasonCompleted && (
-                          <Check className="h-3 w-3 text-emerald-400 shrink-0" />
-                        )}
-                        <span>{s.name}</span>
-                        <span className="text-[10px] opacity-70">({s.episodeCount} eps)</span>
-                      </button>
-                    );
-                  })}
+                  {/* Scrollable Season List */}
+                  <div
+                    ref={seasonTabsRef}
+                    onWheel={handleSeasonWheel}
+                    className="flex items-center gap-1.5 overflow-x-auto pb-1.5 pt-0.5 touch-scroll scrollbar-thin min-w-0 flex-1 overscroll-x-contain"
+                  >
+                    {parsedSeasons.map((s) => {
+                      const isTabActive = activeSeasonTab === s.seasonNumber;
+                      const isSeasonCompleted =
+                        currentSeason > s.seasonNumber ||
+                        (currentSeason === s.seasonNumber && currentEpisode >= s.episodeCount);
+
+                      return (
+                        <button
+                          key={s.seasonNumber}
+                          data-season={s.seasonNumber}
+                          type="button"
+                          onClick={() => setActiveSeasonTab(s.seasonNumber)}
+                          className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition border shrink-0 cursor-pointer ${
+                            isTabActive
+                              ? "bg-indigo-600 text-white border-indigo-500 shadow-sm"
+                              : "bg-zinc-900 text-zinc-400 hover:text-zinc-200 border-zinc-800 hover:bg-zinc-850"
+                          }`}
+                        >
+                          {isSeasonCompleted && (
+                            <Check className="h-3 w-3 text-emerald-400 shrink-0" />
+                          )}
+                          <span>{s.name}</span>
+                          <span className="text-[10px] opacity-70">({s.episodeCount} eps)</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Right Scroll Navigation Pill */}
+                  {canScrollRight && (
+                    <button
+                      type="button"
+                      onClick={() => handleScrollSeasons("right")}
+                      aria-label="Scroll seasons right"
+                      className="absolute right-0 z-10 flex h-7 w-7 items-center justify-center rounded-lg bg-zinc-900/90 text-zinc-300 hover:text-white hover:bg-zinc-800 border border-zinc-700/70 shadow-md backdrop-blur-xs transition shrink-0 cursor-pointer"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
               )}
 
@@ -617,22 +716,22 @@ export function MediaDetailModal({
         </div>
 
         {/* Modal Footer */}
-        <div className="flex items-center justify-between border-t border-zinc-800 bg-zinc-900/95 px-4 py-3 sm:px-5 sm:py-3.5 safe-bottom shrink-0">
+        <div className="flex flex-wrap items-center justify-between gap-2.5 border-t border-zinc-800 bg-zinc-900/95 px-4 py-3 sm:px-5 sm:py-3.5 safe-bottom shrink-0 min-w-0">
           {/* Delete Action */}
-          <div>
+          <div className="min-w-0">
             {showDeleteConfirm ? (
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs text-rose-400 font-medium">Are you sure?</span>
                 <button
                   onClick={handleDelete}
                   disabled={isDeleting}
-                  className="rounded-lg bg-rose-600 hover:bg-rose-500 px-2.5 py-1 text-xs font-semibold text-white transition"
+                  className="rounded-lg bg-rose-600 hover:bg-rose-500 px-2.5 py-1 text-xs font-semibold text-white transition cursor-pointer"
                 >
                   {isDeleting ? "Deleting..." : "Yes, Delete"}
                 </button>
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
-                  className="text-xs text-zinc-400 hover:text-zinc-200"
+                  className="text-xs text-zinc-400 hover:text-zinc-200 cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -641,7 +740,7 @@ export function MediaDetailModal({
               <button
                 type="button"
                 onClick={() => setShowDeleteConfirm(true)}
-                className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-rose-400 transition"
+                className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-rose-400 transition cursor-pointer"
               >
                 <Trash2 className="h-3.5 w-3.5" />
                 <span>Remove</span>
@@ -650,11 +749,11 @@ export function MediaDetailModal({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0 ml-auto">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl px-3.5 py-2 text-xs font-medium text-zinc-400 hover:text-zinc-200 transition"
+              className="rounded-xl px-3.5 py-2 text-xs font-medium text-zinc-400 hover:text-zinc-200 transition cursor-pointer"
             >
               Cancel
             </button>
@@ -662,7 +761,7 @@ export function MediaDetailModal({
               type="button"
               onClick={handleSave}
               disabled={isSaving}
-              className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-indigo-600/20 transition disabled:opacity-50"
+              className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-indigo-600/20 transition disabled:opacity-50 cursor-pointer"
             >
               <Save className="h-3.5 w-3.5" />
               <span>{isSaving ? "Saving..." : "Save Changes"}</span>

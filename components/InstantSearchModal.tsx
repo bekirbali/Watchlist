@@ -67,6 +67,11 @@ export function InstantSearchModal({
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 50);
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
     } else {
       setQuery("");
       setResults([]);
@@ -139,10 +144,10 @@ export function InstantSearchModal({
     <div
       onMouseDown={handleBackdropMouseDown}
       onMouseUp={handleBackdropMouseUp}
-      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center bg-zinc-950/80 backdrop-blur-md p-2 sm:p-6 overflow-y-auto safe-top"
+      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center bg-zinc-950/80 backdrop-blur-md p-2 sm:p-6 overflow-y-auto overflow-x-hidden safe-top"
     >
       <div
-        className="relative w-full max-w-2xl rounded-2xl bg-zinc-900 border border-zinc-800 shadow-2xl overflow-hidden mt-2 sm:mt-0 animate-in fade-in zoom-in-95 duration-200"
+        className="relative w-full max-w-2xl rounded-2xl bg-zinc-900 border border-zinc-800 shadow-2xl overflow-hidden mt-2 sm:mt-0 animate-in fade-in zoom-in-95 duration-200 min-w-0"
         onClick={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
       >

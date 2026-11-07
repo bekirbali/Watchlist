@@ -67,9 +67,9 @@ export function FilterBar({
   };
 
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <div className="space-y-3 sm:space-y-4 min-w-0">
       {/* Status Navigation Tabs with Edge-to-Edge Touch Scroll */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 touch-scroll no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 touch-scroll no-scrollbar -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = status === tab.id;
@@ -98,7 +98,7 @@ export function FilterBar({
       </div>
 
       {/* Secondary Controls Bar: Type Segmented Control + Search & Sort */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 pt-0.5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 pt-0.5 min-w-0">
         {/* Type Toggle (Full-width 3-segment on mobile, compact inline on desktop) */}
         <div className="grid grid-cols-3 sm:flex items-center rounded-xl bg-zinc-900 p-1 border border-zinc-800 w-full sm:w-auto">
           <button
@@ -130,14 +130,14 @@ export function FilterBar({
         </div>
 
         {/* Search & Sort Controls */}
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex items-center gap-2 w-full sm:w-auto min-w-0">
           {/* Quick Filter Input */}
           <input
             type="text"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Filter list..."
-            className="flex-1 sm:w-48 rounded-xl bg-zinc-900 border border-zinc-800 px-3 py-1.5 text-sm sm:text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition"
+            className="min-w-0 flex-1 sm:w-48 rounded-xl bg-zinc-900 border border-zinc-800 px-3 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition"
           />
 
           {/* Sort Selector & Direction Toggle */}
@@ -147,7 +147,7 @@ export function FilterBar({
               <select
                 value={sortBy}
                 onChange={(e) => onSortByChange(e.target.value)}
-                className="bg-transparent text-xs text-zinc-200 focus:outline-none cursor-pointer pr-1 font-medium"
+                className="bg-transparent text-xs text-zinc-200 focus:outline-none cursor-pointer pr-1 font-medium max-w-[110px] sm:max-w-none truncate"
               >
                 <option value="updatedAt" className="bg-zinc-900 text-zinc-200">Recently Active</option>
                 <option value="imdbRating" className="bg-zinc-900 text-zinc-200">IMDb Rating</option>
@@ -170,7 +170,7 @@ export function FilterBar({
               ) : (
                 <ArrowDown className="h-3.5 w-3.5 text-indigo-400 shrink-0" />
               )}
-              <span className="text-[11px] font-medium text-zinc-300">{getOrderBadge()}</span>
+              <span className="text-[11px] font-medium text-zinc-300 hidden sm:inline">{getOrderBadge()}</span>
             </button>
           </div>
         </div>
